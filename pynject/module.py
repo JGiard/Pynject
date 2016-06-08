@@ -1,3 +1,6 @@
+from const import PYNJECT_SINGLETON
+
+
 class BoundClass:
     def __init__(self, cls, target):
         self.cls = cls
@@ -31,3 +34,6 @@ class Binder:
 
     def to(self, target):
         self.module.add_bound_class(self.cls, target)
+
+    def as_singleton(self):
+        setattr(self.cls, PYNJECT_SINGLETON, True)

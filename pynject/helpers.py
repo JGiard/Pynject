@@ -1,12 +1,16 @@
-import re
 from inspect import signature, getmembers
 
+from const import PYNJECT_SINGLETON
 from pynject.const import PYNJECT_ATTR, PYNJECT_MODEL
 from pynject.model import PynjectModel
 
 
-def is_pynject(obj_type):
-    return getattr(obj_type, PYNJECT_ATTR, False)
+def is_pynject(cls):
+    return getattr(cls, PYNJECT_ATTR, False)
+
+
+def is_singleton(cls):
+    return getattr(cls, PYNJECT_SINGLETON, False)
 
 
 def get_constructor(cls):
@@ -18,6 +22,9 @@ def get_constructor(cls):
 
 def has_empty_construtor(cls):
     try:
+        contructor = get_constructor(cls)
+        if contructor == object.__init__:
+            return True
         params = signature(get_constructor(cls)).parameters
         return len(params) == 1 and 'self' in params
     except TypeError:

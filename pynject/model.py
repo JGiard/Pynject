@@ -1,23 +1,3 @@
-class ListType:
-    def __init__(self, sub_type: type):
-        self.sub_type = sub_type
-
-    def __repr__(self):
-        return '<class \'list[{}]\'>'.format(self.sub_type.__name__)
-
-
-class UnresolvedListType:
-    def __init__(self, sub_type_provider):
-        self.sub_type_provider = sub_type_provider
-
-    @property
-    def sub_type(self):
-        return self.sub_type_provider()
-
-    def __repr__(self):
-        return '<class \'list[{}]\'>'.format(self.sub_type.__name__)
-
-
 class PynjectAttribute:
     def __init__(self, name, attr_type):
         self.name = name

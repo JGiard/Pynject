@@ -1,9 +1,8 @@
 import sys
-from inspect import Parameter, getmembers, signature
+from inspect import Parameter, signature
 
-from pynject.const import PYNJECT_TYPEINFO
 from pynject.helpers import get_constructor
-from pynject.model import PynjectModel, PynjectAttribute, ListType, UnresolvedListType, PynjectUnresolvedAttribute
+from pynject.model import PynjectModel, PynjectAttribute, PynjectUnresolvedAttribute
 
 
 def type_provider(cls, name):
@@ -19,7 +18,6 @@ def type_provider(cls, name):
 class PynjectModelBuilder:
     def __init__(self, cls):
         self.cls = cls
-        self.type_info = getattr(cls, PYNJECT_TYPEINFO, dict())
 
     def build_model(self) -> PynjectModel:
         constructor = get_constructor(self.cls)
@@ -35,16 +33,6 @@ class PynjectModelBuilder:
             raise TypeError('parameter {} in class {} has no type'.format(parameter.name, self.cls.__name__))
         if parameter.kind != Parameter.POSITIONAL_OR_KEYWORD:
             raise TypeError('pynject only handle named parameters')
-        if parameter.annotation is list:
-            if parameter.name in self.type_info:
-                sub_type = self.type_info[parameter.name]
-                attr_type = ListType(sub_type)
-                if type(sub_type) is str:
-                    attr_type = UnresolvedListType(type_provider(self.cls, sub_type))
-                return PynjectAttribute(parameter.name, attr_type)
-            else:
-                raise TypeError('list parameter {} in class {} has no subType'.format(parameter.name,
-                                                                                      self.cls.__name__))
         if type(parameter.annotation) is str:
             return PynjectUnresolvedAttribute(parameter.name, type_provider(self.cls, parameter.annotation))
         return PynjectAttribute(parameter.name, parameter.annotation)
