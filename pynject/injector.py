@@ -1,5 +1,6 @@
-from helpers import is_singleton
-from pynject.helpers import has_empty_construtor, is_pynject, get_model
+import logging
+
+from pynject.helpers import has_empty_construtor, is_pynject, get_model, is_singleton
 from pynject.module import Module
 
 
@@ -10,8 +11,13 @@ class Injector:
         self.singletons = {}
 
     def get_instance(self, cls):
-        if self.module.is_bound(cls):
-            return self.get_instance(self.module.get_target(cls))
+        if self.module.storage.is_bound(cls):
+            return self.get_instance(self.module.storage.get_target(cls))
+        if self.module.storage.is_provided(cls):
+            provider = self.get_instance(self.module.storage.get_provider(cls))
+            return provider.get()
+        if self.module.storage.is_instancied(cls):
+            return self.module.storage.get_instance(cls)
         if has_empty_construtor(cls) or is_pynject(cls):
             return self.__create_class(cls)
         else:

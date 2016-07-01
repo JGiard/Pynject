@@ -1,7 +1,6 @@
 from inspect import signature, getmembers
 
-from const import PYNJECT_SINGLETON
-from pynject.const import PYNJECT_ATTR, PYNJECT_MODEL
+from pynject.const import PYNJECT_ATTR, PYNJECT_MODEL, PYNJECT_SINGLETON
 from pynject.model import PynjectModel
 
 
