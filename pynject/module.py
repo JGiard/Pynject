@@ -12,6 +12,7 @@ class ModuleStorage:
         self.bound_cls = {}
         self.provided_cls = {}
         self.instance_cls = {}
+        self.factored_cls = {}
 
     def is_bound(self, cls):
         return cls in self.bound_cls
@@ -22,6 +23,9 @@ class ModuleStorage:
     def is_instancied(self, cls):
         return cls in self.instance_cls
 
+    def is_factored(self, cls):
+        return cls in self.factored_cls
+
     def get_target(self, cls):
         return self.bound_cls[cls]
 
@@ -31,6 +35,9 @@ class ModuleStorage:
     def get_instance(self, cls):
         return self.instance_cls[cls]
 
+    def get_factory(self, cls):
+        return self.factored_cls[cls]
+
     def add_bound_class(self, cls, target):
         self.bound_cls[cls] = target
 
@@ -39,6 +46,9 @@ class ModuleStorage:
 
     def add_instancied_class(self, cls, target):
         self.instance_cls[cls] = target
+
+    def add_factored_class(self, cls, factory):
+        self.factored_cls[cls] = factory
 
 
 class Module:
@@ -73,6 +83,10 @@ class Binder:
     def to_provider(self, provider):
         Binder(provider, self.storage).as_singleton()
         self.storage.add_provided_class(self.cls, provider)
+
+    def to_factory(self, factory):
+        Binder(factory, self.storage).as_singleton()
+        self.storage.add_factored_class(self.cls, factory)
 
     def to_instance(self, instance):
         self.storage.add_instancied_class(self.cls, instance)
