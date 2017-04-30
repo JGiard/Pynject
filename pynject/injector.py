@@ -1,14 +1,15 @@
-import logging
-
+from pynject.decorators import pynject, singleton
 from pynject.helpers import has_empty_construtor, is_pynject, get_model, is_singleton
 from pynject.module import Module
 
 
+@pynject
+@singleton
 class Injector:
     def __init__(self, module: Module):
         module.configure()
         self.module = module
-        self.singletons = {}
+        self.singletons = {self.__class__: self}
 
     def get_instance(self, cls):
         if self.module.storage.is_bound(cls):
