@@ -19,9 +19,6 @@ class Injector:
         if self.module.storage.is_provided(cls):
             provider = self.get_instance(self.module.storage.get_provider(cls))
             return provider.get()
-        if self.module.storage.is_factored(cls):
-            factory = self.get_instance(self.module.storage.get_factory(cls))
-            return factory.get(cls)
         if self.module.storage.is_instancied(cls):
             return self.module.storage.get_instance(cls)
         if has_empty_construtor(cls) or is_pynject(cls):
