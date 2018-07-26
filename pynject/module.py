@@ -1,4 +1,7 @@
+from typing import Callable, Type, Any, Optional
+
 from pynject.const import PYNJECT_SINGLETON
+from pynject.model import PynjectAttribute
 
 
 class BoundClass:
@@ -13,6 +16,7 @@ class ModuleStorage:
         self.provided_cls = {}
         self.instance_cls = {}
         self.factored_cls = {}
+        self.hooks = []
 
     def is_bound(self, cls):
         return cls in self.bound_cls
@@ -50,6 +54,9 @@ class ModuleStorage:
     def add_factored_class(self, cls, factory):
         self.factored_cls[cls] = factory
 
+    def add_hook(self, hook):
+        self.hooks.append(hook)
+
 
 class Module:
     def __init__(self):
@@ -67,6 +74,9 @@ class Module:
 
     def bind(self, cls):
         return Binder(cls, self.storage)
+
+    def add_hook(self, hook: Callable[[Type, PynjectAttribute], Optional[Any]]):
+        self.storage.add_hook(hook)
 
 
 class Binder:

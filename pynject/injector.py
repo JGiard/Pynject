@@ -1,5 +1,7 @@
 from pynject.decorators import pynject, singleton
+
 from pynject.helpers import has_empty_construtor, is_pynject, get_model, is_singleton
+from pynject.model import PynjectAttribute
 from pynject.module import Module
 
 
@@ -36,9 +38,16 @@ class Injector:
             model = get_model(cls)
             params = {}
             for attribute in model.attributes:
-                params[attribute.name] = self.get_instance(attribute.attr_type)
+                params[attribute.name] = self.__fill_parameter(cls, attribute)
             obj = cls(**params)
 
         if is_singleton(cls):
             self.singletons[cls] = obj
         return obj
+
+    def __fill_parameter(self, cls, attribute: PynjectAttribute):
+        for hook in self.module.storage.hooks:
+            instance = hook(cls, attribute)
+            if instance is not None:
+                return instance
+        return self.get_instance(attribute.attr_type)
