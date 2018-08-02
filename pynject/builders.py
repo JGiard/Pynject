@@ -29,8 +29,6 @@ class PynjectModelBuilder:
         return PynjectModel(attributes)
 
     def build_attribute(self, parameter: Parameter) -> PynjectAttribute:
-        if parameter.annotation is Parameter.empty:
-            raise TypeError('parameter {} in class {} has no type'.format(parameter.name, self.cls.__name__))
         if parameter.kind != Parameter.POSITIONAL_OR_KEYWORD:
             raise TypeError('pynject only handle named parameters')
         if type(parameter.annotation) is str:

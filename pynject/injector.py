@@ -1,5 +1,6 @@
-from pynject.decorators import pynject, singleton
+from inspect import Parameter
 
+from pynject.decorators import pynject, singleton
 from pynject.helpers import has_empty_construtor, is_pynject, get_model, is_singleton
 from pynject.model import PynjectAttribute
 from pynject.module import Module
@@ -47,4 +48,7 @@ class Injector:
             instance = hook(cls, attribute)
             if instance is not None:
                 return instance
+
+        if attribute.attr_type is Parameter.empty:
+            raise TypeError('parameter {} in class {} has no type'.format(attribute.name, self.cls.__name__))
         return self.get_instance(attribute.attr_type)
