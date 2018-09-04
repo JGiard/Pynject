@@ -50,5 +50,5 @@ class Injector:
                 return instance
 
         if attribute.attr_type is Parameter.empty:
-            raise TypeError('parameter {} in class {} has no type'.format(attribute.name, self.cls.__name__))
+            raise TypeError('parameter {} in class {} has no type'.format(attribute.name, cls.__name__))
         return self.get_instance(attribute.attr_type)
