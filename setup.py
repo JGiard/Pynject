@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='Pynject',
-      version='0.4',
+      version='0.4.1',
       description='A minimalist python injector',
       url='https://github.com/JGiard/Pynject',
       author='Jean Giard',
